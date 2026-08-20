@@ -6,11 +6,11 @@ const SB = 10000
 const BB = 20000
 
 const BOTS = [
-  { id: 'ace', name: '老K', emoji: '♠️', loose: 0.04, agg: 0.58, bluff: 0.08, tag: '稳健', style: '紧凶。垃圾牌就弃，强牌价值下注，很少大额诈唬。' },
-  { id: 'fox', name: '狐狸', emoji: '🦊', loose: 0.16, agg: 0.72, bluff: 0.22, tag: '狡猾', style: '松凶、爱变换尺度。会延迟诈唬，也会突然弃牌，专吃软玩家。' },
-  { id: 'rock', name: '石头', emoji: '🪨', loose: -0.1, agg: 0.22, bluff: 0.03, tag: '极紧', style: '极紧。只有强成牌或大听牌才继续，几乎不诈唬。' },
-  { id: 'fish', name: '鱼王', emoji: '🐟', loose: 0.24, agg: 0.18, bluff: 0.05, tag: '松软', style: '跟注站。好奇又松，一对或听牌都不爱弃，很少大加注。' },
-  { id: 'nitro', name: '疯子', emoji: '🔥', loose: 0.3, agg: 0.88, bluff: 0.36, tag: '疯狂', style: '疯子。爱施压，常加注和全下，偶尔乱诈。' },
+  { id: 'altman', name: 'Altman', emoji: 'A', brand: 'openai', company: 'OpenAI', loose: 0.04, agg: 0.58, bluff: 0.08, tag: 'OpenAI', style: '你是 OpenAI 创始人 Sam Altman。紧凶、爱讲愿景，但牌桌上绝不露底。垃圾牌就弃，强牌价值下注，很少大额诈唬。' },
+  { id: 'dario', name: '达里奥', emoji: 'D', brand: 'anthropic', company: 'Anthropic', loose: -0.1, agg: 0.22, bluff: 0.03, tag: 'Anthropic', style: '你是 Anthropic 创始人 Dario Amodei。极紧、安全优先。只有强成牌或大听牌才继续，几乎不诈唬。' },
+  { id: 'musk', name: '马斯克', emoji: 'X', brand: 'xai', company: 'xAI', loose: 0.3, agg: 0.88, bluff: 0.36, tag: 'xAI', style: '你是 xAI 创始人埃隆·马斯克。疯子打法，爱全下，闲话短促带刺，偶尔乱诈。' },
+  { id: 'liang', name: '梁文峰', emoji: '梁', brand: 'deepseek', company: 'DeepSeek', loose: 0.16, agg: 0.72, bluff: 0.22, tag: 'DeepSeek', style: '你是 DeepSeek 创始人梁文峰。高效松凶，尺度多变，会突然加注，专吃软玩家。' },
+  { id: 'jensen', name: '黄仁勋', emoji: '黄', brand: 'nvidia', company: 'NVIDIA', loose: 0.12, agg: 0.7, bluff: 0.12, tag: 'NVIDIA', style: '你是 NVIDIA 创始人黄仁勋。热情、持续施压、爱价值下注。闲话像发布会，但不提牌面。' },
 ]
 
 const RANK_TXT = { 14: 'A', 13: 'K', 12: 'Q', 11: 'J', 10: 'T', 9: '9', 8: '8', 7: '7', 6: '6', 5: '5', 4: '4', 3: '3', 2: '2' }
@@ -179,6 +179,8 @@ function createPlayer(spec, seat) {
     id: spec.id,
     name: spec.name,
     emoji: spec.emoji,
+    brand: spec.brand || '',
+    company: spec.company || '',
     kind: spec.kind,
     tag: spec.tag || '',
     loose: spec.loose || 0,
@@ -347,6 +349,8 @@ function createTable(ctx) {
           id: p.id,
           name: p.name,
           emoji: p.emoji,
+          brand: p.brand || '',
+          company: p.company || '',
           kind: p.kind,
           tag: p.tag,
           seat: p.seat,
@@ -712,7 +716,7 @@ function createTable(ctx) {
     }
     state.agentModel = sel.provider + '/' + sel.model
     const system = [
-      '你是德州扑克牌桌上的玩家「' + p.name + '」。',
+      '你是德州扑克牌桌上的玩家「' + p.name + '」' + (p.company ? ('（' + p.company + '）') : '') + '。',
       '风格：' + (p.style || p.tag || '均衡'),
       '你只能看见自己的底牌。筹码单位是 tokens。',
       '用 holdem_act 做出一个合法动作。amount 是加注到的总额。',
