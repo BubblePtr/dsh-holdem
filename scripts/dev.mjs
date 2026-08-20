@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Watch src/client.cjs and rewrite lib/client.js on change. The dsh --dev
-// HMR node half stat-polls that bundle and hot-reloads the browser plugin,
-// so no restart or page refresh is needed. Host changes still need a full
-// `pnpm build` and a dsh restart.
+// Watch src/client.cjs and rewrite lib/client.js on change. The web GUI's
+// always-mounted client-hmr plugin stat-polls that bundle and hot-reloads
+// the browser plugin, so no restart or page refresh is needed. Host changes
+// still need a full `pnpm build` and a dsh restart.
 import { context } from 'esbuild'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
@@ -37,4 +37,4 @@ const client = await context({
 })
 
 await client.watch()
-console.log('[dev] watching src/client.cjs — pair with: npx @deepseek-ai/dsh --profile web --dev')
+console.log('[dev] watching src/client.cjs — pair with: npx @deepseek-ai/dsh --profile web')
