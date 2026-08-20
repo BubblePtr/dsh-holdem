@@ -73,7 +73,7 @@ function createPlayer(spec, seat) {
   }
 }
 
-function createTable(ctx) {
+export function createTable(ctx) {
   const state = {
     status: 'idle',
     handNo: 0,
@@ -232,6 +232,8 @@ function createTable(ctx) {
           folded: p.folded,
           allIn: p.allIn,
           isDealer: p.seat === state.dealer,
+          isSb: p.seat === (state.dealer + 1) % players.length,
+          isBb: p.seat === (state.dealer + 2) % players.length,
           isToAct: state.toAct === p.seat && state.status === 'playing',
           lastAction: p.lastAction,
           lastThought: '',

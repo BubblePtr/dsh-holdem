@@ -70,6 +70,8 @@ module.exports = `
 .hk-name{min-width:0;font-size:12px;font-weight:650;color:#111;display:flex;align-items:center;gap:4px;max-width:118px}
 .hk-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hk-d{flex:none;width:16px;height:16px;border-radius:50%;background:#111;color:#fff;font-size:9px;font-weight:750;display:flex;align-items:center;justify-content:center;letter-spacing:0}
+.hk-d.hk-bb{background:#6f6f73}
+.hk-d.hk-sb{background:#fff;color:#555;border:1px solid #d0d0d5}
 .hk-stack{flex:none;margin-left:auto;white-space:nowrap;font-size:11px;color:#8a8a8e}
 .hk-status{max-width:168px;font-size:11px;font-weight:600;color:#3b82f6;background:#eef4ff;border-radius:999px;padding:3px 8px;line-height:1.25;text-align:center}
 .hk-status.talk{color:#444;background:#f4f4f5}

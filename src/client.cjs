@@ -183,7 +183,10 @@ function seatView(p, thinkLabel, isWinner) {
     h('div', { className: 'hk-avatar', style: pal ? { background: pal.bg, color: pal.fg } : undefined }, pal ? BrandMark(p.brand, 16, pal.fg) : (p.emoji || '•')),
     h('div', { className: 'hk-name' },
       h('span', {}, p.id === 'hero' ? 'you' : (p.name || p.id)),
-      p.isDealer ? h('span', { className: 'hk-d', title: '庄家' }, '庄') : Verified(),
+      p.isDealer ? h('span', { className: 'hk-d', title: '庄家' }, '庄')
+        : p.isBb ? h('span', { className: 'hk-d hk-bb', title: '大盲' }, '大')
+        : p.isSb ? h('span', { className: 'hk-d hk-sb', title: '小盲' }, '小')
+        : Verified(),
     ),
     h('div', { className: 'hk-stack' }, fmt(p.stack) + ' 筹码'),
   )
