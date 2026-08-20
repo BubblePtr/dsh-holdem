@@ -11,10 +11,11 @@ dsh-holdem 是 DeepSeek Harness (dsh) 的插件：六人无限注德州扑克，
 ```sh
 pnpm install
 pnpm build        # 一次性构建（scripts/build.mjs），产出 lib/
-pnpm dev          # watch 模式（scripts/dev.mjs），只监听 src/client.cjs 重建 lib/client.js
+pnpm dev          # watch 模式（scripts/dev.mjs），只监听 client 侧源码重建 lib/client.js
+pnpm test         # node:test 单测（test/*.test.mjs），覆盖 cards.js 与 pots.js 纯逻辑
 ```
 
-没有测试和 lint 配置。发包时 `prepack` 会自动执行 build。
+发包时 `prepack` 会自动执行 build。无 lint 配置。
 
 开发调试循环（本机 profile 已 `link:` 到本仓库，dsh CLI 用 `npx @deepseek-ai/dsh` 调用）：
 - 改 `src/client.cjs`（UI）：一个终端跑 `pnpm dev`，另一个终端跑 `npx @deepseek-ai/dsh --profile web`。web GUI 常驻挂载 client-hmr 插件（无需任何旗标；旧版曾要求 `--dev`，现已移除），它轮询 bundle 文件：保存 → 自动重建 → 浏览器自动热重载，无需重启或刷新（插件 React state 会丢，但牌局状态在 host 侧，无影响）。
@@ -25,6 +26,8 @@ pnpm dev          # watch 模式（scripts/dev.mjs），只监听 src/client.cjs
 ## 架构
 
 插件分为两个半区，由 `scripts/build.mjs` 用 esbuild 分别打包：
+
+纯逻辑单独成模块并有单测：`src/cards.js`（牌力评估，`eval5`/`evalBest` 等）、`src/pots.js`（边池分层 `makePots`）；`src/client-css.cjs` 是 client 的整段 CSS 字符串。牌局引擎（`createTable` 闭包）刻意保持在 `src/host.js` 内未拆——共享可变状态，拆分需先补更多特征测试。
 
 **Host（`src/host.js` → `lib/index.js`，Node/ESM）**
 - cordis 风格插件：`export const name / inject = ['timer', 'webServer']` 和 `apply(ctx)`。build 脚本会校验这组导出，缺了会构建失败。
