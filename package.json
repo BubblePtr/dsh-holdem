@@ -1,0 +1,57 @@
+{
+  "name": "dsh-holdem",
+  "version": "0.1.3",
+  "description": "Six-max No-Limit Hold'em for DeepSeek Harness: one human and five LLM agents.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepack": "node scripts/build.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BubblePtr/dsh-holdem.git"
+  },
+  "homepage": "https://github.com/BubblePtr/dsh-holdem",
+  "bugs": {
+    "url": "https://github.com/BubblePtr/dsh-holdem/issues"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ],
+      "platform": "web"
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "texas-holdem",
+    "poker"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.25.5"
+  }
+}
