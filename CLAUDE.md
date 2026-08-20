@@ -10,14 +10,15 @@ dsh-holdem 是 DeepSeek Harness (dsh) 的插件：六人无限注德州扑克，
 
 ```sh
 pnpm install
-pnpm build        # 运行 scripts/build.mjs，产出 lib/（无 watch 模式）
+pnpm build        # 一次性构建（scripts/build.mjs），产出 lib/
+pnpm dev          # watch 模式（scripts/dev.mjs），只监听 src/client.cjs 重建 lib/client.js
 ```
 
 没有测试和 lint 配置。发包时 `prepack` 会自动执行 build。
 
-开发调试循环：
-- 改 `src/host.js` → `pnpm build` 后重启 `dsh --profile web`
-- 改 `src/client.cjs` → `pnpm build` 后刷新浏览器页面
+开发调试循环（本机 profile 已 `link:` 到本仓库，dsh CLI 用 `npx @deepseek-ai/dsh` 调用）：
+- 改 `src/client.cjs`（UI）：一个终端跑 `pnpm dev`，另一个终端跑 `npx @deepseek-ai/dsh --profile web --dev`。`--dev` 会挂载客户端 HMR：保存 → 自动重建 → 浏览器自动热重载，无需重启或刷新（插件 React state 会丢，但牌局状态在 host 侧，无影响）。
+- 改 `src/host.js`：`pnpm build` 后重启 `npx @deepseek-ai/dsh --profile web`。host 侧共享 HMR 官方暂未启用，没有免重启方案。
 
 注意：`lib/` 是提交进 git 的构建产物，改完 `src/` 必须重新 build，否则运行的还是旧代码。
 
