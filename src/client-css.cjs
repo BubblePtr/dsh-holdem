@@ -64,7 +64,9 @@ module.exports = `
 .hk-seat.winner .hk-pill{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.30)}
 .hk-seat.winner{z-index:5}
 @keyframes hk-winpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-.hk-banner.hk-winner-banner{color:#92400e;background:#fffbeb;border:1px solid #fcd34d;font-weight:700;font-size:13px}
+.hk-banner.hk-winner-banner{display:flex;flex-direction:column;align-items:center;gap:2px;max-width:min(420px,86vw);color:#92400e;background:#fffbeb;border:1px solid #fcd34d;font-weight:700;font-size:13px;line-height:1.35;text-wrap:balance;font-variant-numeric:tabular-nums}
+.hk-winner-h{font-weight:700}
+.hk-winner-sub{font-weight:600;font-size:11px;color:#a16207}
 .hk-seat.toact .hk-pill{border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.18)}
 .hk-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:750;background:#f4f4f5;flex:none;letter-spacing:0}
 .hk-name{min-width:0;font-size:12px;font-weight:650;color:#111;display:flex;align-items:center;gap:4px;max-width:118px}
