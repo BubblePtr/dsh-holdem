@@ -74,6 +74,20 @@ pnpm test         # node:test 单测（test/*.test.mjs），覆盖 cards.js 与 
 - 派发回调要 try/catch 包住，一个坏监听器不能拖垮其余监听器。
 - `LlmAdapter.stream()` 的模型侧失败以终止 `finish {kind:'error'|'aborted'}` chunk 暴露，不以异常暴露（本插件 `askAgent` 已按此处理）。
 
+## Agent skills
+
+### Issue tracker
+
+议题在本仓库的 GitHub Issues 跟踪（`gh` CLI）。见 `docs/agents/issue-tracker.md`。
+
+### Triage labels
+
+使用默认五标签词表（needs-triage / needs-info / ready-for-agent / ready-for-human / wontfix）。见 `docs/agents/triage-labels.md`。
+
+### Domain docs
+
+单上下文布局：根 `CONTEXT.md` + `docs/adr/`。见 `docs/agents/domain.md`。
+
 ## 约定
 
 - 全部游戏内文案（bot 人设、日志、UI 标签、talk 约束）是简体中文；代码注释用英文。
