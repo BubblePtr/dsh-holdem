@@ -33,6 +33,8 @@ const TABLE_ASPECT = 2.15
 
 function seatPos(seat) {
   const rx = 50 / TABLE_ASPECT
+  // Hero at bottom; numbers increase toward the right. Clockwise action is
+  // the other way (see cw() in host.js).
   if (seat === 0) return { left: '50%', top: '100%', transform: 'translate(-50%, -50%)' }
   if (seat === 3) return { left: '50%', top: '0%', transform: 'translate(-50%, -50%)' }
   const spec = {

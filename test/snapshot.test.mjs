@@ -12,17 +12,25 @@ function stubCtx() {
   }
 }
 
-test('after dealing, blind seats follow the dealer button', () => {
+// Next seat clockwise on the drawn table (hero at bottom, seats increase right).
+const CLOCKWISE = { 0: 5, 5: 4, 4: 3, 3: 2, 2: 1, 1: 0 }
+
+test('blinds sit clockwise from the dealer button', () => {
   const table = createTable(stubCtx())
   const snap = table.start()
-  const n = snap.players.length
   const dealer = snap.players.find(p => p.isDealer)
   const sb = snap.players.filter(p => p.isSb)
   const bb = snap.players.filter(p => p.isBb)
   assert.equal(sb.length, 1)
   assert.equal(bb.length, 1)
-  assert.equal(sb[0].seat, (dealer.seat + 1) % n)
-  assert.equal(bb[0].seat, (dealer.seat + 2) % n)
-  // The three buttons sit on three different seats at a six-max table.
+  assert.equal(sb[0].seat, CLOCKWISE[dealer.seat])
+  assert.equal(bb[0].seat, CLOCKWISE[sb[0].seat])
   assert.equal(new Set([dealer.seat, sb[0].seat, bb[0].seat]).size, 3)
+})
+
+test('preflop action starts clockwise from the big blind', () => {
+  const table = createTable(stubCtx())
+  const snap = table.start()
+  const bb = snap.players.find(p => p.isBb)
+  assert.equal(snap.toAct, CLOCKWISE[bb.seat])
 })
