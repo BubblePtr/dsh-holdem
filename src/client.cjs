@@ -18,26 +18,11 @@ function rpc(method, args) {
 }
 
 const CSS = require('./client-css.cjs')
+const { fmt, formatWinnerLines } = require('./format.js')
 
 const SUIT = { s: '♠', h: '♥', d: '♦', c: '♣' }
 const RANK = { 14: 'A', 13: 'K', 12: 'Q', 11: 'J', 10: '10', 9: '9', 8: '8', 7: '7', 6: '6', 5: '5', 4: '4', 3: '3', 2: '2' }
 const STREET = { idle: '大厅', preflop: '翻前', flop: '翻牌', turn: '转牌', river: '河牌', showdown: '摊牌', 'hand-over': '本手结束' }
-
-function fmt(n) {
-  n = Math.floor(Number(n) || 0)
-  const abs = Math.abs(n)
-  if (abs >= 1000000) {
-    const v = n / 1000000
-    const s = abs >= 10000000 ? String(Math.round(v)) : String(Math.round(v * 100) / 100)
-    return s + 'M'
-  }
-  if (abs >= 1000) {
-    const v = n / 1000
-    const s = abs >= 10000 ? String(Math.round(v)) : String(Math.round(v * 100) / 100)
-    return s + 'K'
-  }
-  return String(n)
-}
 
 function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n))
@@ -277,9 +262,7 @@ function Table(props) {
   if (!state) return h('div', { className: 'hk-root', ref: setRootEl }, h('div', { className: 'hk-wait', style: { padding: 24 } }, '连接中…'))
 
   const acting = (state.players || []).find(function (p) { return p.isToAct })
-  const winnerText = (state.winners || []).map(function (w) {
-    return w.names.join('、') + ' · ' + w.handName + ' · ' + fmt(w.amount) + ' 筹码'
-  }).join(' · ')
+  const winnerLines = formatWinnerLines(state.winners || [])
   const winnerSeats = {}
   for (let i = 0; i < (state.winners || []).length; i++) {
     const seats = state.winners[i].seats || []
@@ -329,7 +312,16 @@ function Table(props) {
             boardSlots.map(function (c, i) { return h('div', { key: i }, cardView(c || 'back', boardOpts)) }),
           ),
           idle ? h('div', { className: 'hk-banner' }, '五位玩家入座。每人只能看见自己的底牌。') : null,
-          over && winnerText ? h('div', { className: 'hk-banner hk-winner-banner' }, '🏆 ' + winnerText) : null,
+          over && winnerLines.length
+            ? h('div', { className: 'hk-banner hk-winner-banner' },
+                winnerLines.map(function (line, i) {
+                  return h('div', {
+                    key: i,
+                    className: i === 0 ? 'hk-winner-h' : 'hk-winner-sub',
+                  }, (i === 0 ? '🏆 ' : '') + line)
+                }),
+              )
+            : null,
         ),
         (state.players || []).map(function (p) { return seatView(p, thinkLabel, !!winnerSeats[p.seat]) }),
       ),
