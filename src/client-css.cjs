@@ -81,9 +81,9 @@ module.exports = `
 .hk-dock{flex:none;width:100%;padding:0 8px 4px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:6}
 .hk-panel{display:flex;align-items:center;gap:10px;background:#f4f4f5;border-radius:999px;padding:7px 10px 7px 8px}
 .hk-pre{cursor:pointer;border:0;background:transparent;color:#444;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:650}
-.hk-pre.on{background:#e7e7ea;color:#111}
+.hk-pre.on{background:#fff;color:#111;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .hk-slider{width:168px;accent-color:#3b82f6}
-.hk-amt{font-size:12px;color:#6f6f73;font-weight:650;min-width:92px;text-align:right}
+.hk-amt{font-size:12px;color:#6f6f73;font-weight:650;min-width:92px;text-align:right;font-variant-numeric:tabular-nums}
 .hk-actions{display:flex;align-items:center;justify-content:center;gap:10px}
 .hk-btn{cursor:pointer;border:1px solid #e5e5e7;background:#fff;color:#111;border-radius:14px;padding:12px 18px;font-size:15px;font-weight:700;min-width:132px}
 .hk-btn:disabled{opacity:.35;cursor:default}

@@ -19,6 +19,7 @@ function rpc(method, args) {
 
 const CSS = require('./client-css.cjs')
 const { fmt, formatWinnerLines } = require('./format.js')
+const { raisePresets } = require('./bets.js')
 
 const SUIT = { s: '♠', h: '♥', d: '♦', c: '♣' }
 const RANK = { 14: 'A', 13: 'K', 12: 'Q', 11: 'J', 10: '10', 9: '9', 8: '8', 7: '7', 6: '6', 5: '5', 4: '4', 3: '3', 2: '2' }
@@ -177,7 +178,7 @@ function seatView(p, thinkLabel, isWinner) {
   )
   const below = isWinner
     ? h('div', { className: 'hk-winbadge' }, '🏆 Winner')
-    : (p.committed > 0 ? h('div', { className: 'hk-potbet' }, '底池 ' + fmt(p.committed)) : null)
+    : (p.committed > 0 ? h('div', { className: 'hk-potbet' }, '投入 ' + fmt(p.committed)) : null)
   const status = h('div', { className: 'hk-status' + (statusText ? (thinking ? '' : ' talk') : ' off') }, statusText || 'idle')
   return h('div', {
     key: p.id,
@@ -277,9 +278,11 @@ function Table(props) {
   const dealerBrand = dealer && dealer.kind === 'ai' && dealer.brand ? dealer.brand : 'hero'
   const boardOpts = { small: false, backBrand: dealerBrand, rimBrand: dealerBrand }
   const pot = state.pot || 0
-  const pcts = [25, 33, 75, 133]
-  const presets = pcts.map(function (pct) {
-    return { label: pct + '%', v: clamp(Math.floor((state.currentBet || 0) + pot * (pct / 100)), minR || 0, maxR || 0) }
+  const presets = raisePresets({
+    pot: pot,
+    currentBet: state.currentBet || 0,
+    minR: minR,
+    maxR: maxR,
   })
   const chosen = clamp(raiseTo || minR, minR || 0, maxR || 0)
   let thinkLabel = ''
@@ -332,7 +335,7 @@ function Table(props) {
             )
           : myTurn
             ? [
-                legal.raise
+                legal.raise && maxR > minR
                   ? h('div', { key: 'panel', className: 'hk-panel' },
                       presets.map(function (p) {
                         return h('button', {
