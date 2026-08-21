@@ -143,9 +143,17 @@ export function createTable(ctx) {
     return !p.folded && !p.allIn && p.stack >= 0
   }
 
+  // Seat numbers increase to the right on the felt (hero at bottom), so
+  // clockwise play — dealer's left — is decreasing seat index.
+  function cw(from, steps) {
+    const n = players.length
+    const k = steps == null ? 1 : steps
+    return (from - k % n + n) % n
+  }
+
   function nextIndex(from) {
     for (let i = 1; i <= players.length; i++) {
-      const p = players[(from + i) % players.length]
+      const p = players[cw(from, i)]
       if (!p.folded && !p.allIn) return p.seat
     }
     return null
@@ -232,8 +240,8 @@ export function createTable(ctx) {
           folded: p.folded,
           allIn: p.allIn,
           isDealer: p.seat === state.dealer,
-          isSb: p.seat === (state.dealer + 1) % players.length,
-          isBb: p.seat === (state.dealer + 2) % players.length,
+          isSb: p.seat === cw(state.dealer, 1),
+          isBb: p.seat === cw(state.dealer, 2),
           isToAct: state.toAct === p.seat && state.status === 'playing',
           lastAction: p.lastAction,
           lastThought: '',
@@ -250,7 +258,7 @@ export function createTable(ctx) {
 
   function findNextActor(from) {
     for (let i = 1; i <= players.length; i++) {
-      const p = players[(from + i) % players.length]
+      const p = players[cw(from, i)]
       if (!p.folded && !p.allIn && (!p.acted || p.bet < state.currentBet)) return p.seat
     }
     return null
@@ -266,7 +274,8 @@ export function createTable(ctx) {
   }
 
   function seatOrder(seat) {
-    return (seat - state.dealer - 1 + players.length) % players.length
+    // Odd chips go first to the player immediately clockwise of the button.
+    return (state.dealer - seat - 1 + players.length) % players.length
   }
 
   function finishFoldWin() {
@@ -671,7 +680,7 @@ export function createTable(ctx) {
       p.talk = ''
     }
     state.handNo += 1
-    state.dealer = (state.dealer + 1) % players.length
+    state.dealer = cw(state.dealer)
     state.deck = shuffle(makeDeck())
     state.board = []
     state.street = 'preflop'
@@ -682,12 +691,11 @@ export function createTable(ctx) {
     state.actionLog = []
     for (let r = 0; r < 2; r++) {
       for (let i = 0; i < players.length; i++) {
-        const seat = (state.dealer + 1 + i) % players.length
-        players[seat].cards.push(state.deck.pop())
+        players[cw(state.dealer, 1 + i)].cards.push(state.deck.pop())
       }
     }
-    const sbSeat = (state.dealer + 1) % players.length
-    const bbSeat = (state.dealer + 2) % players.length
+    const sbSeat = cw(state.dealer, 1)
+    const bbSeat = cw(state.dealer, 2)
     put(players[sbSeat], SB)
     players[sbSeat].lastAction = '小盲 ' + players[sbSeat].bet
     put(players[bbSeat], BB)
